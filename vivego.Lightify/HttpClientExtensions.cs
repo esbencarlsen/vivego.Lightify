@@ -6,9 +6,10 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.WebUtilities;
+
 using Newtonsoft.Json;
 
-using vivego.Lightify.HttpHandlers;
 using vivego.Lightify.Models;
 
 namespace vivego.Lightify
@@ -121,11 +122,12 @@ namespace vivego.Lightify
 			long deviceId,
 			params (string ParamName, string ParamValue)[] parameters)
 		{
-			string url = Constants.ApiOperation.DeviceSet
-				.WithQuery(Constants.QueryParameter.Idx, deviceId.ToString());
+			
+			string url = QueryHelpers.AddQueryString(Constants.ApiOperation.DeviceSet,
+				Constants.QueryParameter.Idx, deviceId.ToString());
 			foreach ((string ParamName, string ParamValue) valueTuple in parameters)
 			{
-				url = url.WithQuery(valueTuple.ParamName, valueTuple.ParamValue);
+				url = QueryHelpers.AddQueryString(url, valueTuple.ParamName, valueTuple.ParamValue);
 			}
 				
 			OperationResponse result = await httpClient
